@@ -11,8 +11,7 @@ gdpfile <- "gdp.csv"
 
 gdp <- read.csv(gdpfile, 
                 na.strings=c('', '..'),
-                skip = 3,
-                stringsAsFactors = FALSE
+                skip = 3
                 )
 gdp_trimmed <- gdp[2:232,]
 names(gdp_trimmed) <- c("CountryCode", "Rank", "deleteme", "Economy", "GDP2012", "notes", "deleteme2", "deleteme3", "deleteme4", "deleteme5")
@@ -29,7 +28,7 @@ gdp <- gdp_without_useless_columns[complete_gdp,]
 #str(gdp)
 
 # Get and clean Edu data.
-edu <- read.csv(edufile, stringsAsFactors = FALSE)
+edu <- read.csv(edufile)
 # Edu Structure:
 #str(edu)
 
