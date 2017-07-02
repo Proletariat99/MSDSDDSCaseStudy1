@@ -30,7 +30,7 @@ source("cs1_mergedata.R")
 
 After removing the missing or irrelevant rows in the GDP data, there were 190 rows left that show country (both name & code), GDP and ranking.  For the education data, there are 234 rows.  The difference between the two data sets can be found using the setdiff() set operation:
 
-```{r message=FALSE}
+```{r message=FALSE, echo=FALSE, results='hide'}
 missing <- setdiff(edu$CountryCode, gdp$CountryCode)
 for (code in missing) {
   print(edu$Long.Name[edu$CountryCode==code])
