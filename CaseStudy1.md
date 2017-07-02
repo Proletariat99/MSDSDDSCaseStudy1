@@ -112,7 +112,7 @@ ggplot(all, aes(x=Long.Name, y=GDP2012)) +
   scale_y_log10(label=scales::comma)
 ```
 
-![plot of chunk unnamed-chunk-139](figure/unnamed-chunk-139-1.png)
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 ### Question 5:
 To illustrate how GDP Ranking compares with Income group, we cut the GDP rankings into 5 quantile groups and compare against income groups in a table.  
