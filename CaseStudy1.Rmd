@@ -1,31 +1,80 @@
 ---
 title: "Case Study 1"
+subtitle: "Doing Data Science 405"
 output: html_document
+author: "Dave Dyer"
 ---
 
-# Background
-We are provided with two data sets.  One contains education stats by Country and another contains Country Gross Domestic Product (GDP) data.  
+## Introduction
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+## Getting Data
+This bit of code pulls down two csv files from the worldbank data sets and downloads it to a subfolder of the project called "data".  Note:  If the directory doesn't yet exist, this will create it.
+
+```{r message=FALSE}
+source("cs1_getdata.R") 
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Tidying and Merging Data  
+The GDP data set has some header rows, some extraneous rows at the end, some columns we're not interested in, some blank lines and some blank data.  
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Before merging with the Education data set, this set needs cleaned up.  In short, we remove the extraneous or blank columns, remove blank rows and rows with missing data, and trim off the header and footer.  
 
-```{r cars}
-summary(cars)
+Once complete. there are 190 rows with full data in the GDP data set.  Now the data are ready to be merged with the Education data set (which is significantly cleaner.)  The code for loading the data into memory, cleaning the gdp data set and merging with the Education data set is found in cs1_mergedata.R.
+
+```{r message=FALSE}
+source("cs1_mergedata.R")
 ```
 
-## Including Plots
+After removing the missing or irrelevant rows in the GDP data, there were 190 rows left that show country (both name & code), GDP and ranking.  For the education data, there are 234 rows.  The difference between the two data sets can be found using the setdiff() set operation:
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r message=FALSE}
+missing <- setdiff(edu$CountryCode, gdp$CountryCode)
+for (code in missing) {
+  print(edu$Long.Name[edu$CountryCode==code])
+}
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+The reason these are missing from the merged data is because there was no data collected from them in the world bank gdp data.
+
+The following code merges the data into a single data set.  Note that rows with NA's or empty fields within the education data set were not yet removed, since not all analysis requires a complete data set in all columns.
+
+Now that the getting, cleaning and merging of the data are all complete, we can move on to answering interesting questions about the data set.
+
+
+
+### Question 1:
+Merging on the field "CountryCode", there are 189 rows that match (there were 190 'complete' rows in the GDP data.)  The reason for the mis match between 234 total rows and 189 matching rows is explained above using the setdiff operation.  
+
+The one economy that is missing from the education data set, but appears in the gdp data set is "South Sudan".  The GDP data has both South Sudan and Sudan, whilst the education data only has "Republic of Sudan."  The time from 2010 to present has been a volatile time for Sudan, with confusing national borders, economies, widespread violence, elections, etc.  For the purposes of this study, we will consider Sudan (SDN) GDP, since there is a match in both data sets, and not South Sudan GDP, which we will consider an 'incomplete' case.
+
+
+### Question 2:
+After sort in ascending order by GDP, using the following code:
+
+```{r echo=FALSE}
+all_sorted <- all_the_datas[order(all_the_datas$GDP2012, decreasing=FALSE),]
+print(all_sorted$Long.Name[13])
+```
+The Country with the 13th lowest GDP is St. Kitts and Nevis.
+
+### Question 3:
+The organization for economic cooperation and development (OECD) was established to promote policies that would improve the economic and social well-being of people around the world (http://www.oecd.org/about/).  An interesting question to analyze is that of whether or not OECD countries with high Income have higher-ranked GDPs on average than Non-OECD, yet still high-income countries.
+
+To calculate the average GDP rankings for the High Income: OECD and High Income: nonOECD groups, we use the following code:
+
+```{r echo=FALSE}
+all <- all_sorted # tired of typing underscores and it doesn't matter if it's sorted or not when taking averages of rank
+highOECD <- all[all$Income.Group=="High income: OECD",]
+highNonOECD <- all[all$Income.Group=="High income: nonOECD",]
+avg_high_oecd <- mean(as.numeric(highOECD$Rank))
+avg_high_non_oecd <- mean(as.numeric(highNonOECD$Rank))
+avg_high_oecd
+avg_high_non_oecd
+```
+
+The average rank of high income OECD countries is 32.97, while the average rank of non-oecd high income countries is 91.91, almost 60 ranks lower on average.  While this is just an observational study, and we therefore cannot attributed the rank difference to OECD membership, it is nonetheless interesting and worth further exploration.
+
+### Question 4:
