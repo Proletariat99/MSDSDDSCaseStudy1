@@ -1,9 +1,9 @@
 ---
 title: "Case Study 1"
 subtitle: "Doing Data Science 405"
-output: html_document
+output: md_document
 author: "Dave Dyer"
-theme: "zenburn"
+theme: united
 ---
 
 ## Introduction
@@ -133,6 +133,6 @@ ranktable
 Of Lower Middle Income countries, there are 13 within the top 38 nations with the highest GDP.
 
 ## Conclusion
-In general, one would think that OECD membership would place countries higher on the GDP-ranking scale, but based on our preliminary analysis, that may not be the case.  Of the top 38 ranked countries, 68% are from Upper and Lower Middle income groups, and only 7% are from High Income OECD groups.
+In general, one would think that OECD membership would place countries higher on the GDP-ranking scale, but based on our preliminary analysis, that may not be the case.  Of the top 38 ranked countries, 68% are from Upper and Lower Middle income groups, and only 7% are from High Income OECD groups.  
 
 
